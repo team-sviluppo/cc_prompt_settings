@@ -1,16 +1,7 @@
-import time
-import cat.factory.llm as llms
-import langchain
-
 from cat.log import log
 from typing import List, Union, Dict
 from datetime import timedelta
-from langchain.docstore.document import Document
-from langchain.tools.base import BaseTool
-from langchain.agents import load_tools
-from cat.utils import verbal_timedelta
-from cat.mad_hatter.decorators import tool, hook
-from cat.log import log
+from cat.mad_hatter.decorators import hook
 
 # Default prompt settings
 lang = "Italian"
