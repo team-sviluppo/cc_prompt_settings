@@ -186,8 +186,12 @@ def verbal_timedelta_ita(td: timedelta) -> str:
 
 @hook(priority=1)
 def before_agent_starts(agent_input, cat) -> Union[None, Dict]:
+    global lang
     if only_local:
         num_declarative_memories = len(cat.working_memory["declarative_memories"])
         if num_declarative_memories == 0:
-            return {"output": "Scusami, non ho informazioni su questo tema."}
+            if lang == "Italian":
+                return {"output": "Scusami, non ho informazioni su questo tema."}
+            else:
+                return {"output": "Sorry, I have no information on this topic."}
     return None
