@@ -6,7 +6,7 @@ This is a plugin for the [Cheshire Cat Project](https://github.com/pieroit/chesh
 
 After plugin installation on plugin settings you can change:
 
-- Language: set the language of the prmt sent to LLM (Italian or English)
+- Language: set the language of the prompt sent to LLM (Italian or English)
 - Only local response: force cheshire cat to respond only with data previusly sent into the rabbit hole
 - Prompt prefix: custom promtp prefix
 - Disable episodic memory: not use episodic memory to generate the LLM response
