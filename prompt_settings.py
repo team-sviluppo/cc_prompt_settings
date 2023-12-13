@@ -32,7 +32,7 @@ def update_variables(settings):
 
 @hook(priority=10)
 def before_cat_reads_message(user_message_json, cat):
-    settings = cat.mad_hatter.plugins["cc_prompt_settings"].load_settings()
+    settings = cat.mad_hatter.get_plugin().load_settings()
     update_variables(settings)
 
     return user_message_json
@@ -122,7 +122,9 @@ def prompt_suffix_it(prompt_suffix, cat) -> str:
 
 
 @hook(priority=1)
-def before_cat_recalls_procedural_memories(declarative_recall_config: dict, cat) -> dict:
+def before_cat_recalls_procedural_memories(
+    declarative_recall_config: dict, cat
+) -> dict:
     global disable_procedural
     if disable_procedural:
         declarative_recall_config["k"] = 0
@@ -131,7 +133,9 @@ def before_cat_recalls_procedural_memories(declarative_recall_config: dict, cat)
 
 
 @hook(priority=1)
-def before_cat_recalls_declarative_memories(declarative_recall_config: dict, cat) -> dict:
+def before_cat_recalls_declarative_memories(
+    declarative_recall_config: dict, cat
+) -> dict:
     global disable_declarative, number_of_declarative_items, declarative_threshold
     if disable_declarative:
         custom_k = 0
