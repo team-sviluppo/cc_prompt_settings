@@ -11,6 +11,7 @@ class AvailbleLanguages(Enum):
 # Plugin settings
 class PluginSettings(BaseModel):
     language: AvailbleLanguages = AvailbleLanguages.it
+    legacy_mode: bool = False
     only_local_responses: bool = False
     disable_episodic_memories: bool = False
     disable_declarative_memories: bool = False
