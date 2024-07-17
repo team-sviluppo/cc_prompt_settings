@@ -18,9 +18,9 @@ episodic_threshold = 0.5
 
 
 def update_variables(settings, prompt_settings):
-    global only_local, custom_prefix, lang, disable_episodic, disable_declarative, disable_procedural, number_of_episodic_items, number_of_declarative_items, declarative_threshold, episodic_threshold
+    global only_local, custom_prefix, lang, legacy, disable_episodic, disable_declarative, disable_procedural, number_of_episodic_items, number_of_declarative_items, declarative_threshold, episodic_threshold
     lang = settings["language"]
-    legacy = settings["only_local_responses"]
+    legacy = settings["legacy"]
     only_local = settings["only_local_responses"]
     disable_episodic = settings["disable_episodic_memories"]
     disable_declarative = settings["disable_declarative_memories"]
@@ -75,7 +75,7 @@ def agent_prompt_prefix(prefix, cat) -> str:
 
 @hook(priority=10)
 def agent_prompt_suffix(prompt_suffix, cat) -> str:
-    global lang
+    global lang, legacy
     if lang == "English":
         if legacy:
             prompt_suffix = prompt_suffix_legacy_en(prompt_suffix, cat)
@@ -250,13 +250,13 @@ def before_cat_recalls_episodic_memories(episodic_recall_config: dict, cat) -> d
 
 
 @hook(priority=1)
-def before_agent_starts(agent_input, cat) -> Union[None, Dict]:
+def before_cat_sends_message(message, cat):
     global lang
     if only_local:
         num_declarative_memories = len(cat.working_memory["declarative_memories"])
         if num_declarative_memories == 0:
             if lang == "Italian":
-                return {"output": "Scusami, non ho informazioni su questo tema."}
+                message["content"] = "Scusami, non ho informazioni su questo tema."
             else:
-                return {"output": "Sorry, I have no information on this topic."}
-    return None
+                message["content"] = "Sorry, I have no information on this topic."
+    return message
