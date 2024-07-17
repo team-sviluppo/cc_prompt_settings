@@ -8,5 +8,6 @@
     "number_of_declarative_items": 5,
     "number_of_episodic_items": 30,
     "declarative_threshold": 0.5,
-    "episodic_threshold": 0.8
+    "episodic_threshold": 0.8,
+    "legacy_mode": false
 }
