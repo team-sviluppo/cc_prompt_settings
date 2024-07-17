@@ -251,7 +251,7 @@ def before_cat_recalls_episodic_memories(episodic_recall_config: dict, cat) -> d
 
 @hook(priority=1)
 def before_cat_sends_message(message, cat):
-    global lang
+    global lang, only_local
     if only_local:
         num_declarative_memories = len(cat.working_memory["declarative_memories"])
         if num_declarative_memories == 0:
