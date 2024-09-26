@@ -5,7 +5,7 @@ from cat.mad_hatter.decorators import hook
 
 # Default prompt settings
 lang = "Italian"
-legacy = False
+legacy_mode = False
 only_local = False
 disable_episodic = False
 disable_declarative = False
@@ -18,9 +18,9 @@ episodic_threshold = 0.5
 
 
 def update_variables(settings, prompt_settings):
-    global only_local, custom_prefix, lang, legacy, disable_episodic, disable_declarative, disable_procedural, number_of_episodic_items, number_of_declarative_items, declarative_threshold, episodic_threshold
+    global only_local, custom_prefix, lang, legacy_mode, disable_episodic, disable_declarative, disable_procedural, number_of_episodic_items, number_of_declarative_items, declarative_threshold, episodic_threshold
     lang = settings["language"]
-    legacy = settings["legacy"]
+    legacy_mode = settings["legacy_mode"]
     only_local = settings["only_local_responses"]
     disable_episodic = settings["disable_episodic_memories"]
     disable_declarative = settings["disable_declarative_memories"]
@@ -50,8 +50,8 @@ def update_variables(settings, prompt_settings):
             custom_prefix = prompt_settings["prompt_prefix"]
         if "language" in prompt_settings:
             lang = prompt_settings["language"]
-        if "legacy" in prompt_settings:
-            legacy = prompt_settings["legacy"]
+        if "legacy_mode" in prompt_settings:
+            legacy_mode = prompt_settings["legacy_mode"]
         if "only_local_responses" in prompt_settings:
             only_local = prompt_settings["only_local_responses"]
 
@@ -75,14 +75,14 @@ def agent_prompt_prefix(prefix, cat) -> str:
 
 @hook(priority=10)
 def agent_prompt_suffix(prompt_suffix, cat) -> str:
-    global lang, legacy
+    global lang, legacy_mode
     if lang == "English":
-        if legacy:
+        if legacy_mode:
             prompt_suffix = prompt_suffix_legacy_en(prompt_suffix, cat)
         else:
             prompt_suffix = prompt_suffix_en(prompt_suffix, cat)
     if lang == "Italian":
-        if legacy:
+        if legacy_mode:
             prompt_suffix = prompt_suffix_legacy_it(prompt_suffix, cat)
         else:
             prompt_suffix = prompt_suffix_it(prompt_suffix, cat)
