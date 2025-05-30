@@ -17,10 +17,12 @@ class PluginSettings(BaseModel):
     disable_declarative_memories: bool = False
     disable_procedural_memories: bool = False
     prompt_prefix: str = ""
+    prompt_suffix: str = ""
     number_of_declarative_items: int = 5
     declarative_threshold: float = 0.5
     number_of_episodic_items: int = 5
     episodic_threshold: float = 0.5
+    procedural_threshold: float = 0.7
 
 
 # hook to give the cat settings

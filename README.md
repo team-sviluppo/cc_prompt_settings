@@ -10,6 +10,7 @@ Here're the settings you can change with this plugin:
 - Legacy mode: If you use a cat version < 1.6.2 you **NEED** to set this value
 - Only local response: force cheshire cat to respond only with data previusly sent into the rabbit hole
 - Prompt prefix: custom prompt prefix
+- Prompt suffix: custom prompt suffix
 - Disable episodic memory: not use episodic memory to generate the LLM response
 - Disable declarative memory: not use decalrative memory to generate the LLM response
 - Disable tools: disbale usage of tools
@@ -17,6 +18,7 @@ Here're the settings you can change with this plugin:
 - Declarative threshold: minimum score of decalrative items to get retrieved from vector database
 - Number of episodoc items: number of episodic items to insert in the prompt and setn to LLM
 - Episodic threshold: minimum score of decalrative items to get retrieved from vector database
+- Procedural threshold: minimum score of procedural items (tools) to get retrieved from vector database
 
 <h2>🛠️ Installation:</h2>
 
@@ -37,6 +39,9 @@ You can change dinamically the settings of plugin adding a prompt_settings json 
         "disable_episodic_memories": "True",
         "prompt_prefix": "You are an expert Python Developer",
      },
+     "tags"{
+         "category": "report"
+     }
 }
 ```
 

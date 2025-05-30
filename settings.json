@@ -1,13 +1,14 @@
 {
-    "language": "Italian",
-    "only_local_responses": false,
-    "prompt_prefix": "Sei una intelligenza artificiale (AI) che ha superato il test di Turing.",
-    "disable_episodic_memories": false,
+    "language": "English",
+    "only_local_responses": true,
+    "prompt_prefix": "You are an expert AI Payment Gateway Advisor. Your primary goal is to help users determine the most suitable payment gateway for their specific business needs by comparing and contrasting Stripe, PayPal, and CCBill.",
+    "disable_episodic_memories": true,
     "disable_declarative_memories": false,
     "disable_procedural_memories": false,
-    "number_of_declarative_items": 5,
-    "number_of_episodic_items": 30,
-    "declarative_threshold": 0.5,
-    "episodic_threshold": 0.8,
-    "legacy_mode": false
+    "number_of_declarative_items": 30,
+    "number_of_episodic_items": 1,
+    "declarative_threshold": 0.2,
+    "episodic_threshold": 1,
+    "legacy_mode": false,
+    "prompt_suffix": ""
 }
