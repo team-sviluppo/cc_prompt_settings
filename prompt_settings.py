@@ -24,7 +24,7 @@ custom_suffix = ""
 def update_variables(settings, prompt_settings):
     global only_local, custom_prefix, lang, legacy_mode, disable_episodic, disable_declarative, disable_procedural, number_of_episodic_items, number_of_declarative_items, declarative_threshold, episodic_threshold, procedural_threshold, custom_suffix
     lang = settings["language"]
-    legacy_mode = settings["legacy_mode_mode"]
+    legacy_mode = settings["legacy_mode"]
     only_local = settings["only_local_responses"]
     disable_episodic = settings["disable_episodic_memories"]
     disable_declarative = settings["disable_declarative_memories"]
