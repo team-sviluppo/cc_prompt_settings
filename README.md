@@ -19,7 +19,7 @@ Here're the settings you can change with this plugin:
 - Number of episodoc items: number of episodic items to insert in the prompt and setn to LLM
 - Episodic threshold: minimum score of decalrative items to get retrieved from vector database
 - Procedural threshold: minimum score of procedural items (tools) to get retrieved from vector database
-- Enable OR Condition for Metadata Filter to change from MUST to SHOULD the filter on Qrdant queries
+- Enable OR Condition for Metadata Filter: enable to change from MUST (=AND) to SHOULD (=OR) the metadata filter on Qrdant queries
 
 <h2>🛠️ Installation:</h2>
 
@@ -30,7 +30,7 @@ Here're the settings you can change with this plugin:
 If you use this plugin with cat version < 1.6.2 you need to set Legacy Mode option othewrwhise this plugin break the cat
 
 <h2>😾 Dynamic settings change</h2>
-You can change dinamically the settings of plugin adding a prompt_settings json on the websocket message, here an example:
+You can change dinamically the settings of plugin adding a prompt_settings json on the websocket message. You can also send a tags to filter the query on QDRANT database, here an example:
 
 ```json
 {
