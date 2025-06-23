@@ -1,8 +1,28 @@
 from cat.log import log
-from typing import List, Union, Dict
+from typing import Any, List, Union, Dict
 from datetime import timedelta
 from cat.mad_hatter.decorators import hook, tool
 import json
+
+from qdrant_client.qdrant_remote import QdrantRemote
+from qdrant_client.http.models import (
+    PointStruct,
+    Distance,
+    VectorParams,
+    Filter,
+    FieldCondition,
+    MatchValue,
+    SearchParams,
+    ScalarQuantization,
+    ScalarQuantizationConfig,
+    ScalarType,
+    QuantizationSearchParams,
+    CreateAliasOperation,
+    CreateAlias,
+    OptimizersConfigDiff,
+)
+
+from langchain.docstore.document import Document
 
 # Default prompt settings
 lang = "Italian"
@@ -19,10 +39,11 @@ episodic_threshold = 0.5
 procedural_threshold = 0.5
 tags = {}
 custom_suffix = ""
+metadata_or_filter = False
 
 
 def update_variables(settings, prompt_settings):
-    global only_local, custom_prefix, lang, legacy_mode, disable_episodic, disable_declarative, disable_procedural, number_of_episodic_items, number_of_declarative_items, declarative_threshold, episodic_threshold, procedural_threshold, custom_suffix
+    global only_local, custom_prefix, lang, legacy_mode, disable_episodic, disable_declarative, disable_procedural, number_of_episodic_items, number_of_declarative_items, declarative_threshold, episodic_threshold, procedural_threshold, custom_suffix, metadata_or_filter
     lang = settings["language"]
     legacy_mode = settings["legacy_mode"]
     only_local = settings["only_local_responses"]
@@ -36,6 +57,7 @@ def update_variables(settings, prompt_settings):
     episodic_threshold = settings["episodic_threshold"]
     custom_suffix = settings["prompt_suffix"]
     procedural_threshold = settings["procedural_threshold"]
+    metadata_or_filter = settings["enable_OR_condition_for_metadata_filter"]
 
     if prompt_settings is not None:
         if "disable_episodic_memories" in prompt_settings:
@@ -290,3 +312,80 @@ def agent_fast_reply(fast_reply, cat):
             else:
                 fast_reply["output"] = "Sorry, I have no information on this topic."
     return fast_reply
+
+
+@hook
+def after_cat_recalls_memories(cat) -> None:
+    global metadata_or_filter, declarative_threshold, number_of_declarative_items
+    if metadata_or_filter:
+        user_message = cat.working_memory.user_message_json.text
+        user_message_embedding = cat.embedder.embed_query(user_message)
+        metadata = cat.working_memory.user_message_json.tags
+        memories = cat.memory.vectors.vector_db.search(
+            collection_name="declarative",
+            query_vector=user_message_embedding,
+            query_filter=_qdrant_filter_from_dict(metadata),
+            with_payload=True,
+            with_vectors=True,
+            limit=number_of_declarative_items,
+            score_threshold=declarative_threshold,
+            search_params=SearchParams(
+                quantization=QuantizationSearchParams(
+                    ignore=False,
+                    rescore=True,
+                    oversampling=2.0,  # Available as of v1.3.0
+                )
+            ),
+        )
+
+        # convert Qdrant points to langchain.Document
+        langchain_documents_from_points = []
+        for m in memories:
+            langchain_documents_from_points.append(
+                (
+                    Document(
+                        page_content=m.payload.get("page_content"),
+                        metadata=m.payload.get("metadata") or {},
+                    ),
+                    m.score,
+                    m.vector,
+                    m.id,
+                )
+            )
+        cat.working_memory.declarative_memories = langchain_documents_from_points
+
+
+def _qdrant_filter_from_dict(filter: dict) -> Filter:
+    if not filter or len(filter) < 1:
+        return None
+
+    return Filter(
+        should=[
+            condition
+            for key, value in filter.items()
+            for condition in _build_condition(key, value)
+        ]
+    )
+
+
+def _build_condition(key: str, value: Any) -> List[FieldCondition]:
+    out = []
+
+    if isinstance(value, dict):
+        for _key, value in value.items():
+            out.extend(_build_condition(f"{key}.{_key}", value))
+    elif isinstance(value, list):
+        for _value in value:
+            if isinstance(_value, dict):
+                out.extend(_build_condition(f"{key}[]", _value))
+            else:
+                out.extend(_build_condition(f"{key}", _value))
+    else:
+        out.append(
+            FieldCondition(
+                key=f"metadata.{key}",
+                match=MatchValue(value=value),
+            )
+        )
+
+    return out

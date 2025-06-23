@@ -19,6 +19,7 @@ Here're the settings you can change with this plugin:
 - Number of episodoc items: number of episodic items to insert in the prompt and setn to LLM
 - Episodic threshold: minimum score of decalrative items to get retrieved from vector database
 - Procedural threshold: minimum score of procedural items (tools) to get retrieved from vector database
+- Enable OR Condition for Metadata Filter to change from MUST to SHOULD the filter on Qrdant queries
 
 <h2>🛠️ Installation:</h2>
 

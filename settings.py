@@ -23,6 +23,7 @@ class PluginSettings(BaseModel):
     number_of_episodic_items: int = 5
     episodic_threshold: float = 0.5
     procedural_threshold: float = 0.7
+    enable_OR_condition_for_metadata_filter: bool = False
 
 
 # hook to give the cat settings
