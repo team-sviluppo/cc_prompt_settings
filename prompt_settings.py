@@ -95,9 +95,9 @@ def before_cat_reads_message(user_message_json, cat):
     prompt_settings = None
     tags = {}
     if "prompt_settings" in user_message_json:
-        prompt_settings = user_message_json["prompt_settings"]
+        prompt_settings = user_message_json.prompt_settings
     if "tags" in user_message_json:
-        tags = user_message_json["tags"]
+        tags = user_message_json.tags
     update_variables(settings, prompt_settings)
     return user_message_json
 
