@@ -304,8 +304,8 @@ def before_cat_recalls_episodic_memories(episodic_recall_config: dict, cat) -> d
 def agent_fast_reply(fast_reply, cat):
     global lang, only_local
     if only_local:
-        num_declarative_memories = len(cat.working_memory["declarative_memories"])
-        num_procedural_memories = len(cat.working_memory["procedural_memories"])
+        num_declarative_memories = len(cat.working_memory.declarative_memories)
+        num_procedural_memories = len(cat.working_memory.procedural_memories)
         if num_declarative_memories == 0 and num_procedural_memories == 0:
             if lang == "Italian":
                 fast_reply["output"] = "Scusami, non ho informazioni su questo tema."
