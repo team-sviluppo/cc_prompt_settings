@@ -318,41 +318,42 @@ def agent_fast_reply(fast_reply, cat):
 def after_cat_recalls_memories(cat) -> None:
     global metadata_or_filter, declarative_threshold, number_of_declarative_items
     if metadata_or_filter:
-        user_message = cat.working_memory.user_message_json.text
-        user_message_embedding = cat.embedder.embed_query(user_message)
-        metadata = cat.working_memory.user_message_json.tags
-        memories = cat.memory.vectors.vector_db.search(
-            collection_name="declarative",
-            query_vector=user_message_embedding,
-            query_filter=_qdrant_filter_from_dict(metadata),
-            with_payload=True,
-            with_vectors=True,
-            limit=number_of_declarative_items,
-            score_threshold=declarative_threshold,
-            search_params=SearchParams(
-                quantization=QuantizationSearchParams(
-                    ignore=False,
-                    rescore=True,
-                    oversampling=2.0,  # Available as of v1.3.0
-                )
-            ),
-        )
-
-        # convert Qdrant points to langchain.Document
-        langchain_documents_from_points = []
-        for m in memories:
-            langchain_documents_from_points.append(
-                (
-                    Document(
-                        page_content=m.payload.get("page_content"),
-                        metadata=m.payload.get("metadata") or {},
-                    ),
-                    m.score,
-                    m.vector,
-                    m.id,
-                )
+        if cat.working_memory.user_message_json.tags:
+            user_message = cat.working_memory.user_message_json.text
+            user_message_embedding = cat.embedder.embed_query(user_message)
+            metadata = cat.working_memory.user_message_json.tags
+            memories = cat.memory.vectors.vector_db.search(
+                collection_name="declarative",
+                query_vector=user_message_embedding,
+                query_filter=_qdrant_filter_from_dict(metadata),
+                with_payload=True,
+                with_vectors=True,
+                limit=number_of_declarative_items,
+                score_threshold=declarative_threshold,
+                search_params=SearchParams(
+                    quantization=QuantizationSearchParams(
+                        ignore=False,
+                        rescore=True,
+                        oversampling=2.0,  # Available as of v1.3.0
+                    )
+                ),
             )
-        cat.working_memory.declarative_memories = langchain_documents_from_points
+
+            # convert Qdrant points to langchain.Document
+            langchain_documents_from_points = []
+            for m in memories:
+                langchain_documents_from_points.append(
+                    (
+                        Document(
+                            page_content=m.payload.get("page_content"),
+                            metadata=m.payload.get("metadata") or {},
+                        ),
+                        m.score,
+                        m.vector,
+                        m.id,
+                    )
+                )
+            cat.working_memory.declarative_memories = langchain_documents_from_points
 
 
 def _qdrant_filter_from_dict(filter: dict) -> Filter:
