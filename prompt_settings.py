@@ -318,7 +318,10 @@ def agent_fast_reply(fast_reply, cat):
 def after_cat_recalls_memories(cat) -> None:
     global metadata_or_filter, declarative_threshold, number_of_declarative_items
     if metadata_or_filter:
-        if cat.working_memory.user_message_json.tags:
+        if (
+            hasattr(cat.working_memory.user_message_json, "tags")
+            and cat.working_memory.user_message_json.tags
+        ):
             user_message = cat.working_memory.user_message_json.text
             user_message_embedding = cat.embedder.embed_query(user_message)
             metadata = cat.working_memory.user_message_json.tags
